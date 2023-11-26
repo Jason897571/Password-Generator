@@ -13,6 +13,7 @@
 var generatePassword = function(){
   var password_length = window.prompt("Please input the length of your password");
 
+  /* check if length of password is vaild and return */
   check_length_of_password = function(){
     if(password_length < 8 ){
       window.prompt("Your password is too short! Please input a number between 8 and 128");
@@ -27,7 +28,7 @@ var generatePassword = function(){
     }
     return "input is not valid";
   }
-
+  /* get the character type for password */
   check_character_types = function(){
 
     invild_prompt = function(character_type){
@@ -89,27 +90,68 @@ var generatePassword = function(){
       var is_special = false;
     }
 
+    /* if there is no character type is selected, select again */
     if(!is_lowercase && !is_uppercase && !is_numeric && !is_special){
       window.prompt("You need to include at least one character type for your password. Please input 'enter' to continue. ");
       check_character_types()
     }
     
-    var character_type_dic = {"is_lowercase":is_lowercase,"is_uppercase":is_uppercase,"is_numeric":is_numeric,"is_special":is_special}
+    var character_type_dic = {"is_lowercase":is_lowercase,"is_uppercase":is_uppercase,"is_numeric":is_numeric,"is_special":is_special};
 
-    return character_type_dic
+    return character_type_dic;
 
   }
 
+  var generate_password_with_criteria = function(length, type_dic){
+
+    var include_lowercase = type_dic["is_lowercase"];
+    var include_uppercase = type_dic["is_uppercase"];
+    var include_numeric = type_dic["is_numeric"];
+    var include_special = type_dic["is_special"];
+
+    var lowercase_character = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+    var uppercase_character = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',  'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    var numeric_character = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    var special_character =['"', " ","!",'"',"#","$","%","&","'","(",")","*","+",",","-",".","/",":",";","<","=",">","?","@","[","\\","]","^","_","`","{","|","}","~"];
 
 
+    var randomly_pickup_element = function(_array){
+
+      var random_index = Math.floor(Math.random() * _array.length)
+      var random_character = _array[random_index]
+      return random_character
+    }
+
+
+    if(include_lowercase && !include_uppercase && !include_numeric && !include_special){
+      /* need to pick up a letter for non-criteria password slot from combined character array */
+      var combined_character_array = lowercase_character.concat(uppercase_character,numeric_character,special_character)
+  
+      /* create a password array and determine which slot is for criteria */
+      var password_array = Array(length);
+      var index = Math.floor(Math.random() * length);
+      
+      for(var i = 0; i < length; i++){
+        if(i == index){
+          password_array[i] = randomly_pickup_element(lowercase_character)
+        }
+        else{
+          password_array[i] = randomly_pickup_element(combined_character_array)
+        }
+
+      }
+      
+    }
+    return password_array.join("")
+  }
 
   password_length = check_length_of_password()
   type = check_character_types()
+  password = generate_password_with_criteria(password_length,type)
 
-  return "the length is: " + password_length + "\n" + "the characte is " + String(type)
+  return "the length is: " + password_length + "\n" + "the characte is " + String(type) + "\n" + "the password is " + password
   
 }
-
 
 
 // Get references to the #generate element
