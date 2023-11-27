@@ -15,14 +15,18 @@ var generatePassword = function(){
 
   /* check if length of password is vaild and return */
   check_length_of_password = function(){
+    /* if the length is less than 8 */
     if(password_length < 8 ){
       window.prompt("Your password is too short! Please input a number between 8 and 128");
     }
+    /* if the length is more than 128 */
     else if(password_length> 128){
       window.prompt("Your password is too long! Please input a number between 8 and 128");
     }
+    /* if the length is between 8 and 128 */
     else if(password_length>=8 && password_length<=128){
       return password_length;
+    /* other invalid input */
     }else{
       window.prompt("Your input is not valid, Please re-enter your password length");
     }
@@ -37,7 +41,7 @@ var generatePassword = function(){
 
     /* if the password should include lowercase character */
     var lowercase = window.prompt("If your password includes lowercase character? y/n");
-
+    /* make sure only y or n is input, otherwsie you need to input again */
     while(lowercase != "y" && lowercase != "n"){
       var lowercase = invild_prompt("lowercase")
     }
@@ -93,6 +97,7 @@ var generatePassword = function(){
     /* if there is no character type is selected, select again */
     if(!is_lowercase && !is_uppercase && !is_numeric && !is_special){
       window.prompt("You need to include at least one character type for your password. Please input 'enter' to continue. ");
+      /* TODO fix it */
       check_character_types()
     }
     
@@ -101,7 +106,7 @@ var generatePassword = function(){
     return character_type_dic;
 
   }
-
+  /* check if the index is in an array of several arrays */
   var check_number_in_keys = function(array,number){
     for (let i = 0; i < array.length; i++) {
       if (array[i][0] == number) {
@@ -131,9 +136,23 @@ var generatePassword = function(){
       return random_character
     }
 
-   
+    
     /* need to pick up a letter for non-criteria password slot from combined character array */
-    var combined_character_array = lowercase_character.concat(uppercase_character,numeric_character,special_character)
+    var combined_character_array = []
+    if(include_lowercase){
+      combined_character_array = combined_character_array.concat(lowercase_character)
+    }
+    if(include_uppercase){
+      combined_character_array = combined_character_array.concat(uppercase_character)
+    }
+    if(include_numeric){
+      combined_character_array = combined_character_array.concat(numeric_character)
+    }
+    if(include_special){
+      combined_character_array = combined_character_array.concat(special_character)
+    }
+    
+    console.log(combined_character_array)
 
     /* create a password array and determine which slot is for criteria */
     var password_array = Array(length);
@@ -154,6 +173,7 @@ var generatePassword = function(){
 
       criteria_info_array.push(lowercase_info)
     }
+
     if(include_uppercase){
       var uppercase_index = Math.floor(Math.random() * length);
 
@@ -185,6 +205,7 @@ var generatePassword = function(){
 
       criteria_info_array.push(numeric_info)
     }
+    
     if(include_special){
       var special_index = Math.floor(Math.random() * length);
 
@@ -201,15 +222,15 @@ var generatePassword = function(){
 
     }
 
-    console.log(criteria_info_array)
 
+    console.log("below is the order regarding if a slot is with criteria or not")
     /* randomize the character for password */
     for(var i = 0; i < length; i++){
    
-
       var is_criteria_slot = (check_number_in_keys(criteria_info_array,i))[0]
       var criteria_character = (check_number_in_keys(criteria_info_array,i))[1]
 
+      
       console.log(is_criteria_slot)
 
       if(is_criteria_slot){
@@ -229,7 +250,7 @@ var generatePassword = function(){
   type = check_character_types()
   password = generate_password_with_criteria(password_length,type)
 
-  return "the length is: " + password_length + "\n" + "the characte is " + String(type) + "\n" + "the password is " + password
+  return "The length is: " + password_length + "\n" + "\n" + "The password is: " + password
   
 }
 
