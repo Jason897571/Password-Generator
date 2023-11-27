@@ -29,7 +29,7 @@ var generatePassword = function(){
     return "input is not valid";
   }
   /* get the character type for password */
-  check_character_types = function(){
+  var check_character_types = function(){
 
     invild_prompt = function(character_type){
       return window.prompt(`Your input is not valid. If your password includes ${character_type} character? please input 'y' or 'n'`);
@@ -102,6 +102,15 @@ var generatePassword = function(){
 
   }
 
+  var check_number_in_keys = function(array,number){
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][0] == number) {
+        return [true,array[i][1]];
+      }
+    }
+    return [false,null];
+  }
+
   var generate_password_with_criteria = function(length, type_dic){
 
     var include_lowercase = type_dic["is_lowercase"];
@@ -112,9 +121,9 @@ var generatePassword = function(){
     var lowercase_character = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
     var uppercase_character = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',  'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
     var numeric_character = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    var special_character =['"', " ","!",'"',"#","$","%","&","'","(",")","*","+",",","-",".","/",":",";","<","=",">","?","@","[","\\","]","^","_","`","{","|","}","~"];
+    var special_character =['"',"!",'"',"#","$","%","&","'","(",")","*","+",",","-",".","/",":",";","<","=",">","?","@","[","\\","]","^","_","`","{","|","}","~"];
 
-
+    /* get a random character based on array */
     var randomly_pickup_element = function(_array){
 
       var random_index = Math.floor(Math.random() * _array.length)
@@ -122,26 +131,97 @@ var generatePassword = function(){
       return random_character
     }
 
+   
+    /* need to pick up a letter for non-criteria password slot from combined character array */
+    var combined_character_array = lowercase_character.concat(uppercase_character,numeric_character,special_character)
 
-    if(include_lowercase && !include_uppercase && !include_numeric && !include_special){
-      /* need to pick up a letter for non-criteria password slot from combined character array */
-      var combined_character_array = lowercase_character.concat(uppercase_character,numeric_character,special_character)
-  
-      /* create a password array and determine which slot is for criteria */
-      var password_array = Array(length);
-      var index = Math.floor(Math.random() * length);
-      
-      for(var i = 0; i < length; i++){
-        if(i == index){
-          password_array[i] = randomly_pickup_element(lowercase_character)
-        }
-        else{
-          password_array[i] = randomly_pickup_element(combined_character_array)
-        }
-
+    /* create a password array and determine which slot is for criteria */
+    var password_array = Array(length);
+    var criteria_info_array =[];
+    var index_taken_array = [];
+    
+    if(include_lowercase){
+      var lowercase_index = Math.floor(Math.random() * length);
+      while(index_taken_array.includes(lowercase_index)){
+        var lowercase_index = Math.floor(Math.random() * length);
       }
       
+      var lowercase_letter = randomly_pickup_element(lowercase_character)
+
+      index_taken_array.push(lowercase_index)/* the index position lowercase has taken */
+
+      var lowercase_info=[lowercase_index,lowercase_letter]
+
+      criteria_info_array.push(lowercase_info)
     }
+    if(include_uppercase){
+      var uppercase_index = Math.floor(Math.random() * length);
+
+      while(index_taken_array.includes(uppercase_index)){
+        var uppercase_index = Math.floor(Math.random() * length);
+      }
+      
+      var uppercase_letter = randomly_pickup_element(uppercase_character)
+
+      index_taken_array.push(uppercase_index)/* the index position lowercase has taken */
+
+      var uppercase_info = [uppercase_index,uppercase_letter]
+
+      criteria_info_array.push(uppercase_info)
+      
+    }
+    if(include_numeric){
+      var numeric_index = Math.floor(Math.random() * length);
+
+      while(index_taken_array.includes(numeric_index)){
+        var numeric_index = Math.floor(Math.random() * length);
+      }
+      
+      var numeric_letter = randomly_pickup_element(numeric_character)
+
+      index_taken_array.push(numeric_index)/* the index position lowercase has taken */
+
+      var numeric_info = [numeric_index,numeric_letter]
+
+      criteria_info_array.push(numeric_info)
+    }
+    if(include_special){
+      var special_index = Math.floor(Math.random() * length);
+
+      while(index_taken_array.includes(special_index)){
+        var special_index = Math.floor(Math.random() * length);
+      }
+      
+      var special_letter = randomly_pickup_element(special_character)
+      index_taken_array.push(special_index)/* the index position lowercase has taken */
+
+      var special_info = [special_index,special_letter]
+
+      criteria_info_array.push(special_info)
+
+    }
+
+    console.log(criteria_info_array)
+
+    /* randomize the character for password */
+    for(var i = 0; i < length; i++){
+   
+
+      var is_criteria_slot = (check_number_in_keys(criteria_info_array,i))[0]
+      var criteria_character = (check_number_in_keys(criteria_info_array,i))[1]
+
+      console.log(is_criteria_slot)
+
+      if(is_criteria_slot){
+        password_array[i] = criteria_character
+
+      }
+      else{
+        password_array[i] = randomly_pickup_element(combined_character_array)
+      }
+    }
+
+
     return password_array.join("")
   }
 
