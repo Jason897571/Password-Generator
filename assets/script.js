@@ -118,6 +118,7 @@ var generatePassword = function () {
   var criteria_info_array = [];
   var index_taken_array = [];
 
+  /* if lowercase is included, determine the slot as lowercase and generate a random character  */
   if (is_lowercase) {
     var lowercase_index = Math.floor(Math.random() * password_length);
     while (index_taken_array.includes(lowercase_index)) {
@@ -134,7 +135,7 @@ var generatePassword = function () {
 
     criteria_info_array.push(lowercase_info);
   }
-
+  /* if uppercase is included, determine the slot as uppercase and generate a random character  */
   if (is_uppercase) {
     var uppercase_index = Math.floor(Math.random() * password_length);
 
@@ -152,6 +153,7 @@ var generatePassword = function () {
 
     criteria_info_array.push(uppercase_info);
   }
+  /* if numeric is included, determine the slot as numeric and generate a random character  */
   if (is_numeric) {
     var numeric_index = Math.floor(Math.random() * password_length);
 
@@ -169,7 +171,7 @@ var generatePassword = function () {
 
     criteria_info_array.push(numeric_info);
   }
-
+  /* if special is included, determine the slot as special and generate a random character  */
   if (is_special) {
     var special_index = Math.floor(Math.random() * password_length);
 
@@ -190,11 +192,11 @@ var generatePassword = function () {
   console.log(
     "below is the order regarding if a slot is with criteria or not"
   );
-  /* randomize the character for password */
+  
   for (var i = 0; i < password_length; i++) {
-    var is_criteria_slot = check_number_in_keys(criteria_info_array, i)[0];
-    var criteria_character = check_number_in_keys(criteria_info_array, i)[1];
-    
+    var is_criteria_slot = check_number_in_keys(criteria_info_array, i)[0];/* if the slot is criteria slot */
+    var criteria_character = check_number_in_keys(criteria_info_array, i)[1]; /* the value for slot */
+
     console.log(is_criteria_slot);
 
     if (is_criteria_slot) {
