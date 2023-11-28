@@ -1,116 +1,219 @@
-// adapts to multiple screen sizes
-//click the button to generate a password
-//prompted for password criteria, select which criteria to include in the password
-//prompted for the length of the password, a length of at least 8 characters and no more than 128 characters
-//asked for character types to include in the password, confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
-//answer each prompt, my input should be validated and at least one character type should be selected
-//all prompts are answered,a password is generated that matches the selected criteria
-//the password is generated, password is either displayed in an alert or written to the page
-
 // Assignment code here
 
+const lowercase_character = "abcdefghijklmnopqrstuvwxyz";
+const uppercase_character = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const numeric_character = "123456789";
+const special_character = `"!#$%^&*(),./;\[]<>?:|{}_+~`;
 
-var generatePassword = function(){
-  var password_length = window.prompt("Please input the length of your password");
 
-  check_length_of_password = function(){
-    if(password_length < 8 ){
-      window.prompt("Your password is too short! Please input a number between 8 and 128");
+var generatePassword = function () {
+
+  /* check if the index is in an array of several arrays */
+  var check_number_in_keys = function (array, number) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][0] == number) {
+        return [true, array[i][1]];
+      }
     }
-    else if(password_length> 128){
-      window.prompt("Your password is too long! Please input a number between 8 and 128");
+    return [false, null];
+  };
+
+  /* get a random character based on string */
+  var randomly_pickup_element = function (_string) {
+    var random_index = Math.floor(Math.random() * _string.length);
+    var random_character = _string[random_index];
+    return random_character;
+  };
+
+
+  var length_validation = true;
+
+  /* have a loop if the user keeps select inappropriate length */
+  while (length_validation) {
+    var password_length = window.prompt(
+      "Please input the length of your password"
+    );
+
+    /* if the length is less than 8 */
+    if (password_length < 8) {
+      window.alert(
+        "Your password is too short! Please input a number between 8 and 128"
+      );
+      length_validation = true;
+    } else if (password_length > 128) {
+    /* if the length is more than 128 */
+      window.alert(
+        "Your password is too long! Please input a number between 8 and 128"
+      );
+      length_validation = true;
+    } else if (password_length >= 8 && password_length <= 128) {
+    /* if the length is between 8 and 128 */
+      length_validation = false;
+      /* other invalid input */
+    } else {
+      window.alert(
+        "Your input is not valid, Please re-enter your password length"
+      );
+      length_validation = true;
     }
-    else if(password_length>=8 && password_length<=128){
-      return password_length;
-    }else{
-      window.prompt("Your input is not valid, Please re-enter your password length");
-    }
-    return "input is not valid";
   }
 
-  check_character_types = function(){
-
-    invild_prompt = function(character_type){
-      return window.prompt(`Your input is not valid. If your password includes ${character_type} character? please input 'y' or 'n'`);
-    }
-
+  var criteria_validation = true;
+  while (criteria_validation) {
     /* if the password should include lowercase character */
-    var lowercase = window.prompt("If your password includes lowercase character? y/n");
+    var is_lowercase = window.confirm(
+      "If your password includes lowercase character?"
+    );
 
-    while(lowercase != "y" && lowercase != "n"){
-      var lowercase = invild_prompt("lowercase")
-    }
     /* if the password should include uppercase character */
-    var uppercase = window.prompt("If your password includes uppercase character? y/n");
-
-    while(uppercase != "y" && uppercase != "n"){
-      var uppercase = invild_prompt("uppercase")
-    }
+    var is_uppercase = window.confirm(
+      "If your password includes uppercase character?"
+    );
 
     /* if the password should include numeric character */
-    var numeric = window.prompt("If your password includes numeric character? y/n");
-
-    while(numeric != "y" && numeric != "n"){
-      var numeric = invild_prompt("numeric")
-    }
+    var is_numeric = window.confirm(
+      "If your password includes numeric character?"
+    );
 
     /* if the password should include special character */
-    var special = window.prompt("If your password includes special character? y/n");
-    while(special != "y" && special != "n"){
-      var numeric = invild_prompt("special")
+    var is_special = window.confirm(
+      "If your password includes special character?"
+    );
+
+    criteria_validation = false;
+
+    /* if there is no character type is selected, select again */
+    if (!is_lowercase && !is_uppercase && !is_numeric && !is_special) {
+      window.alert(
+        "You need to include at least one character type for your password. Please input 'enter' to continue. "
+      );
+      criteria_validation = true;
     }
+  }
 
 
-    if(lowercase == "y"){
-      var is_lowercase = true;
-    }
-    else if(lowercase == "n"){
-      var is_lowercase = false;
+  /* need to pick up a letter for non-criteria password slot from combined character array */
+  var combined_character_array = "";
+  if (is_lowercase) {
+    combined_character_array =
+      combined_character_array.concat(lowercase_character);
+  }
+  if (is_uppercase) {
+    combined_character_array =
+      combined_character_array.concat(uppercase_character);
+  }
+  if (is_numeric) {
+    combined_character_array =
+      combined_character_array.concat(numeric_character);
+  }
+  if (is_special) {
+    combined_character_array =
+      combined_character_array.concat(special_character);
+  }
+
+  console.log("below includes the character pool for non-criteria slots")
+  console.log(combined_character_array);
+
+  /* create a password holder and determine which slot is for criteria letter */
+  var password_holder = "";
+  var criteria_info_array = [];
+  var index_taken_array = [];
+
+  /* if lowercase is included, determine the slot as lowercase and generate a random character  */
+  if (is_lowercase) {
+    var lowercase_index = Math.floor(Math.random() * password_length);
+    while (index_taken_array.includes(lowercase_index)) {
+      var lowercase_index = Math.floor(Math.random() * password_length);
     }
 
-    if(uppercase == "y"){
-      var is_uppercase = true;
-    }
-    else if(uppercase  == "n"){
-      var is_uppercase  = false;
+    var lowercase_letter = randomly_pickup_element(lowercase_character);
+
+    index_taken_array.push(
+      lowercase_index
+    ); /* the index position lowercase has taken */
+
+    var lowercase_info = [lowercase_index, lowercase_letter];
+
+    criteria_info_array.push(lowercase_info);
+  }
+  /* if uppercase is included, determine the slot as uppercase and generate a random character  */
+  if (is_uppercase) {
+    var uppercase_index = Math.floor(Math.random() * password_length);
+
+    while (index_taken_array.includes(uppercase_index)) {
+      var uppercase_index = Math.floor(Math.random() * password_length);
     }
 
-    if(numeric == "y"){
-      var is_numeric = true;
-    }
-    else if(numeric  == "n"){
-      var is_numeric = false;
+    var uppercase_letter = randomly_pickup_element(uppercase_character);
+
+    index_taken_array.push(
+      uppercase_index
+    ); /* the index position lowercase has taken */
+
+    var uppercase_info = [uppercase_index, uppercase_letter];
+
+    criteria_info_array.push(uppercase_info);
+  }
+  /* if numeric is included, determine the slot as numeric and generate a random character  */
+  if (is_numeric) {
+    var numeric_index = Math.floor(Math.random() * password_length);
+
+    while (index_taken_array.includes(numeric_index)) {
+      var numeric_index = Math.floor(Math.random() * password_length);
     }
 
-    if(special == "y"){
-      var is_special = true;
-    }
-    else if(special  == "n"){
-      var is_special = false;
+    var numeric_letter = randomly_pickup_element(numeric_character);
+
+    index_taken_array.push(
+      numeric_index
+    ); /* the index position lowercase has taken */
+
+    var numeric_info = [numeric_index, numeric_letter];
+
+    criteria_info_array.push(numeric_info);
+  }
+  /* if special is included, determine the slot as special and generate a random character  */
+  if (is_special) {
+    var special_index = Math.floor(Math.random() * password_length);
+
+    while (index_taken_array.includes(special_index)) {
+      var special_index = Math.floor(Math.random() * password_length);
     }
 
-    if(!is_lowercase && !is_uppercase && !is_numeric && !is_special){
-      window.prompt("You need to include at least one character type for your password. Please input 'enter' to continue. ");
-      check_character_types()
+    var special_letter = randomly_pickup_element(special_character);
+    index_taken_array.push(
+      special_index
+    ); /* the index position lowercase has taken */
+
+    var special_info = [special_index, special_letter];
+
+    criteria_info_array.push(special_info);
+  }
+
+  console.log(
+    "below is the order regarding if a slot is with criteria or not"
+  );
+  
+  for (var i = 0; i < password_length; i++) {
+    var is_criteria_slot = check_number_in_keys(criteria_info_array, i)[0];/* if the slot is criteria slot */
+    var criteria_character = check_number_in_keys(criteria_info_array, i)[1]; /* the value for slot */
+
+    console.log(is_criteria_slot);
+
+    if (is_criteria_slot) {
+      password_holder += criteria_character;
+    } else {
+      password_holder += randomly_pickup_element(combined_character_array);
     }
-    
-    var character_type_dic = {"is_lowercase":is_lowercase,"is_uppercase":is_uppercase,"is_numeric":is_numeric,"is_special":is_special}
-
-    return character_type_dic
-
   }
 
 
 
-
-  password_length = check_length_of_password()
-  type = check_character_types()
-
-  return "the length is: " + password_length + "\n" + "the characte is " + String(type)
-  
-}
-
-
+  return (
+    "The password is: " +
+    password_holder
+  );
+};
 
 // Get references to the #generate element
 var generateBtn = document.querySelector("#generate");
@@ -121,7 +224,6 @@ function writePassword() {
   var passwordText = document.querySelector("#password");
 
   passwordText.value = password;
-
 }
 
 // Add event listener to generate button
