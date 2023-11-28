@@ -1,7 +1,7 @@
 # Password Generator
 
-## My Repo Link: https://github.com/Jason897571/Challenge_1
-## Link to My Website: https://jason897571.github.io/Challenge_1/
+## My Repo Link: https://github.com/Jason897571/Password-Generator
+## Link to My Website: https://jason897571.github.io/Password-Generator/
 
 ## Description
 ### It is a password generator to insure the security of your account. This tool randomly generate a strong password based on the rule you choose.
