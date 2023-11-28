@@ -111,6 +111,7 @@ var generatePassword = function () {
       combined_character_array.concat(special_character);
   }
 
+  console.log("below includes the character pool for non-criteria slots")
   console.log(combined_character_array);
 
   /* create a password holder and determine which slot is for criteria letter */
@@ -209,10 +210,6 @@ var generatePassword = function () {
 
 
   return (
-    "The length is: " +
-    password_length +
-    "\n" +
-    "\n" +
     "The password is: " +
     password_holder
   );
